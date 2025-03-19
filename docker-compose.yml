@@ -1,0 +1,38 @@
+version: '3.8'  # You can remove this line if you want to avoid the warning
+
+services:
+  app:
+    build: .
+    #volumes:
+    #  - ./app:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=Search Recommendation Engine
+      - DEBUG_MODE=True
+    depends_on:
+      - elasticsearch
+      - mysql
+
+  elasticsearch:
+    image: elasticsearch:8.17.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: ktbfuso
+      MYSQL_PASSWORD: ""
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
